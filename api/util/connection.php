@@ -1,6 +1,6 @@
 <?php
 function db_connect() {
-    $xml_array = simplexml_load_file('../../../app/etc/local.xml');
+    $xml_array = simplexml_load_file(dirname(__FILE__).'/../../../app/etc/local.xml');
 	$host = $xml_array->global->resources->default_setup->connection->host;
     $username = $xml_array->global->resources->default_setup->connection->username;
     $password = $xml_array->global->resources->default_setup->connection->password;

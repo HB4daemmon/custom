@@ -5,7 +5,7 @@
 //3.update param
 //return:
 //{customer:{},status:,errcode:}
-require_once('customer_action.php');
+require_once(dirname(__FILE__).'/action/customer_action.php');
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: X-Requested-With');

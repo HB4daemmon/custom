@@ -1,5 +1,5 @@
 <?php
-    require_once('../util/connection.php');
+    require_once(dirname(__FILE__).'/../../util/connection.php');
 
     function getEntityId($phone){
         try{

@@ -34,7 +34,7 @@ select cev.entity_id from customer_entity_varchar cev,
                           eav_attribute ea
                     where cev.attribute_id = ea.attribute_id
                       and ea.attribute_code = 'phone'
-                      and cev.value = '12345678902';
+                      and cev.value = '15151834774';
 
 --get birthday
 select cev.value from customer_entity_varchar cev,
