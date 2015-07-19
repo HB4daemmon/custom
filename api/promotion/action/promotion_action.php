@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__).'/../../util/connection.php');
 
-function getCouponCode($rule_id){
+function getUnusedCouponCode($rule_id){
     try{
         $conn = db_connect();
         $sql = "select * from salesrule_coupon
@@ -35,7 +35,7 @@ function getCouponCode($rule_id){
 function createPromotion($phone,$rule_id){
     try{
         $conn = db_connect();
-        $coupon_array = getCouponCode($rule_id);
+        $coupon_array = getUnusedCouponCode($rule_id);
         $coupon = $coupon_array['coupon'];
         if($coupon_array['errcode'] == 1){
             throw new Exception($coupon_array['status']);
@@ -49,11 +49,74 @@ function createPromotion($phone,$rule_id){
         }
         $conn->commit();
         $conn->close();
-        return array("promotion"=>'',"errcode"=>0,"status"=>'create promotion success');
+        return array("promotions"=>'',"errcode"=>0,"status"=>'create promotion success');
     }catch (Exception $e){
         $conn->rollback();
         $conn->close();
-        return array("promotion"=>'',"errcode"=>1,"status"=>$e->getMessage());
+        return array("promotions"=>'',"errcode"=>1,"status"=>$e->getMessage());
+    }
+}
+
+function getPromotions($phone,$sort){
+    try{
+        $conn = db_connect();
+        $promotions = array();
+        $sql = "select * from custom_promotions cp,
+                              salesrule_coupon sc
+                        where cp.coupon_id = sc.coupon_id
+                          and phone = '$phone'
+                        order by cp.promotion_id $sort";
+        $sqlres = $conn->query($sql);
+        if(!$sqlres){
+            throw new Exception('GET_PROMOTION_ERROR');
+        }
+
+        $count = $sqlres -> num_rows;
+        if ($count == 0){
+            throw new Exception('THIS_PHONE_HAS_NO_PROMOTION');
+        }
+
+        $promotion_array = ['promotion_id','coupon_id','phone','phone','catalog','enable_flag','rule_id','times_used','code','expiration_date'];
+
+        $i = 1;
+        while($row = $sqlres->fetch_assoc()){
+            $promotion = array();
+            foreach($promotion_array as $p){
+                $promotion[$p] = $row[$p];
+            }
+            $promotions[$i] = $promotion;
+            $i ++;
+        }
+
+        $conn->close();
+        return array("promotions"=>$promotions,"errcode"=>0,"status"=>'get promotions success');
+    }catch (Exception $e){
+        $conn->close();
+        return array("promotions"=>'',"errcode"=>1,"status"=>$e->getMessage());
+    }
+}
+
+function updatePromotion($promotion_id,$code){
+    try{
+        $conn = db_connect();
+        if ($code == 'delete'){
+            $sql = "update custom_promotions set enable_flag = 0
+                                           where promotion_id = $promotion_id";
+        }else{
+            throw new Exception('INVALID_UPDATE_CODE');
+        }
+
+        $sqlres = $conn->query($sql);
+        if(!$sqlres){
+            throw new Exception('UPDATE_PROMOTION_ERROR');
+        }
+        $conn->commit();
+        $conn->close();
+        return array("promotions"=>'',"errcode"=>0,"status"=>'update promotion success');
+    }catch (Exception $e){
+        $conn->rollback();
+        $conn->close();
+        return array("promotions"=>'',"errcode"=>1,"status"=>$e->getMessage());
     }
 }
 

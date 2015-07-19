@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS `custom_promotions` (
   PRIMARY KEY(`promotion_id`)
 );
 
---demo sql
-INSERT INTO `custom_promotions`( `coupon_id`, `phone`, `catalog`, `enable_flag`, `creation_date`, `last_update_date`)
-VALUES
-();
+--select sql
+select * from custom_promotions cp,
+		      salesrule_coupon sc
+where cp.coupon_id = sc.coupon_id
+  and phone = '15151834774'

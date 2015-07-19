@@ -119,7 +119,7 @@ try{
         }
 
     }else{
-        throw new Exception("INVAILD_METHOD");
+        throw new Exception("INVALID_METHOD");
     }
     $result = array("customer"=>$customer,"status"=>$status,"errcode"=>$errcode);
     echo json_encode($result);
