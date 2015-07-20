@@ -5,14 +5,13 @@
  * @param:GET/POST
  *   $method       方法名: get 获取/update 更新数量/use 获取优惠
  *   $mobile       手机号
+ *   $additional   附加参数
  *
  * @return:JSON(data,success,errorcode)
  *   [0]..[n]        地址数组
- *     address_id    地址ID
- *     name          姓名
- *     tel           电话
- *     address       地址
- *     remark        备注
+ *     phone         电话
+ *     card_count    卡片数量
+ *     status        状态:0(未激活)，1(已激活)，2(已使用)
  *
  * by Daemon 2015-7-20
  */
@@ -21,17 +20,22 @@
 require_once(dirname(__FILE__).'/action/card_action.php');
 
 try{
-    /*$param = $_REQUEST;
+    $param = $_REQUEST;
     $result = array();
-    $card_count = array();
-    $errcode = 0;
 
     if(!isset($param['method']) or trim($param['method']) == ''){
-        $errcode = 1;
+        $errorcode = 10007;
         throw new Exception('NONE_METHOD');
     }
 
+    if(!isset($param['mobile']) or trim($param['mobile'] == '')){
+        $errorcode = 10008;
+        throw new Exception('NONE_MOBILE');
+    }
+
+
     $method = $param['method'];
+    $mobile = $param['mobile'];
 
     if(isset($param['additional']) and trim($param['additional'] != '')){
         $additional = $param['additional'];
@@ -40,72 +44,58 @@ try{
     }
 
     if($method == 'get'){
-        if(!isset($param['phone']) or trim($param['phone'] == '')){
-            $errcode = 1;
-            throw new Exception('NONE_PHONE');
-        }
-        $phone = $param['phone'];
+        $return = getCardCount($mobile);
+        $errorcode = $return['errorcode'];
+        $success = $return['success'];
 
-        if($additional == ''){
-            $sort = 'desc';
+        if($success == 1){
+            $data = $return['data'];
         }else{
-            $sort = $additional;
-        }
-        $return = getPromotions($phone,$sort);
-        $errcode = $return['errcode'];
-        $status = $return['status'];
-        if($errcode == 0){
-            $promotions = $return['promotions'];
-        }else{
-            throw new Exception($status);
-        }
-    }else if ($method == 'create'){
-        if(!isset($param['phone']) or trim($param['phone'] == '')){
-            $errcode = 1;
-            throw new Exception('NONE_PHONE');
-        }
-        $phone = $param['phone'];
-
-        if($additional == ''){
-            throw new Exception("NO_RULE_ID_WHEN_CREATE_PROMOTIONS");
-        }else{
-            $rule_id = $additional;
-        }
-
-        $return = createPromotion($phone,$rule_id);
-        $errcode = $return['errcode'];
-        $status = $return['status'];
-        $promotions = $return['promotions'];
-        if($errcode != 0){
-            throw new Exception($status);
+            throw new Exception($errorcode);
         }
     }else if($method == 'update'){
         if($additional == ''){
-            throw new Exception("NO_PARAMS_WHEN_UPDATE_PROMOTION");
+            $errorcode = 10009;
+            throw new Exception("NO_UPDATE_PARAM_WHEN_UPDATE_CARD");
         }else{
-            if(!isset($additional['promotion_id']) or trim($additional['promotion_id']) == ''){
-                throw new Exception("NO_PROMOTION_ID_WHEN_UPDATE_PROMOTION");
-            }else if(!isset($additional['code']) or trim($additional['code'] == '')){
-                throw new Exception("NO_UPDATE_CODE_WHEN_UPDATE_PROMOTION");
-            }
-            $promotion_id = $additional['promotion_id'];
-            $code = $additional['code'];
+            $card_count = $additional;
         }
-        $return = updatePromotion($promotion_id,$code);
-        $errcode = $return['errcode'];
-        $status = $return['status'];
-        $promotions = $return['promotions'];
-        if($errcode != 0){
-            throw new Exception($status);
+        $return = updateCardCount($mobile,$card_count);
+        $errorcode = $return['errorcode'];
+        $success = $return['success'];
+
+        if($success == 1){
+            $data = $return['data'];
+        }else{
+            throw new Exception($errorcode);
         }
-    }else{
+    }else if($method = 'use'){
+        $return = useCardCount($mobile);
+        $errorcode = $return['errorcode'];
+        $success = $return['success'];
+
+        if($success == 1){
+            $data = $return['data'];
+        }else{
+            throw new Exception($errorcode);
+        }
+    }
+    else{
+        $errorcode = 10010;
         throw new Exception("INVALID_METHOD");
     }
-    $result = array("promotions"=>$promotions,"status"=>$status,"errcode"=>$errcode);*/
-    
+    $result = array("data"=>$data,"success"=>1,"errcode"=>0);
+    if(isset($param['array']) and trim($param['array']) != '' ){
+        print_r($result);
+        exit;
+    }
     echo json_encode($result);
 }catch (Exception $e){
-    $result = array("promotions"=>'',"status"=>$e->getMessage(),"errcode"=>1);
+    $result = array("data"=>$e->getMessage(),"success"=>0,"errcode"=>$errorcode);
+    if(isset($param['array']) and trim($param['array']) != '' ){
+        print_r($result);
+        exit;
+    }
     echo json_encode($result);
 }
 
