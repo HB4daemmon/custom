@@ -1,19 +1,29 @@
 <?php
-//post param:
-//1.method: 'get','update','create'
-//2.phone
-//3.additional
-//return:
-//{promotion:{},status:,errcode:}
-//http://localhost/magento/custom/api/promotion/promotion.php?method=get&phone=15151834774
-//http://localhost/magento/custom/api/promotion/promotion.php?method=create&phone=15151834774&additional=1
-//http://localhost/magento/custom/api/promotion/promotion.php?method=update&additional[promotion_id]=5&additional[code]=delete
-require_once(dirname(__FILE__).'/action/promotion_action.php');
+//------------------------------------------------------------------------------------------
+/* 活动卡片API
+ *
+ * @param:GET/POST
+ *   $method       方法名: get 获取/update 更新数量/use 获取优惠
+ *   $mobile       手机号
+ *
+ * @return:JSON(data,success,errorcode)
+ *   [0]..[n]        地址数组
+ *     address_id    地址ID
+ *     name          姓名
+ *     tel           电话
+ *     address       地址
+ *     remark        备注
+ *
+ * by Daemon 2015-7-20
+ */
+//------------------------------------------------------------------------------------------
+
+require_once(dirname(__FILE__).'/action/card_action.php');
 
 try{
-    $param = $_REQUEST;
+    /*$param = $_REQUEST;
     $result = array();
-    $promotions = array();
+    $card_count = array();
     $errcode = 0;
 
     if(!isset($param['method']) or trim($param['method']) == ''){
@@ -91,7 +101,8 @@ try{
     }else{
         throw new Exception("INVALID_METHOD");
     }
-    $result = array("promotions"=>$promotions,"status"=>$status,"errcode"=>$errcode);
+    $result = array("promotions"=>$promotions,"status"=>$status,"errcode"=>$errcode);*/
+    
     echo json_encode($result);
 }catch (Exception $e){
     $result = array("promotions"=>'',"status"=>$e->getMessage(),"errcode"=>1);

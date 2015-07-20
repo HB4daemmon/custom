@@ -7,10 +7,6 @@
 //{customer:{},status:,errcode:}
 require_once(dirname(__FILE__).'/action/customer_action.php');
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: X-Requested-With');
-header('Content-Type:text/html; charset=utf-8');
-
 function getFromPhone($phone){
     $entity_id_array = getEntityId($phone);
     $customer = array();

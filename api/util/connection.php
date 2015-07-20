@@ -1,4 +1,8 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: X-Requested-With');
+header('Content-Type:text/html; charset=utf-8');
+
 function db_connect() {
     $xml_array = simplexml_load_file(dirname(__FILE__).'/../../../app/etc/local.xml');
 	$host = $xml_array->global->resources->default_setup->connection->host;
