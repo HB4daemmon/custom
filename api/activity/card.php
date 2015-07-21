@@ -9,10 +9,13 @@
  *
  * @return:JSON(data,success,errorcode)
  *   [0]..[n]        地址数组
- *     phone         电话
+ *     mobile         电话
  *     card_count    卡片数量
  *     status        状态:0(未激活)，1(已激活)，2(已使用)
  *
+ * exp:http://localhost/magento/custom/api/activity/card.php?method=get&mobile=15151834774
+ *     http://localhost/magento/custom/api/activity/card.php?method=update&mobile=15151834774&additional=1
+ *     http://localhost/magento/custom/api/activity/card.php?method=use&mobile=15151834774&additional=1
  * by Daemon 2015-7-20
  */
 //------------------------------------------------------------------------------------------
@@ -51,7 +54,7 @@ try{
         if($success == 1){
             $data = $return['data'];
         }else{
-            throw new Exception($errorcode);
+            throw new Exception($return['data']);
         }
     }else if($method == 'update'){
         if($additional == ''){
@@ -67,7 +70,7 @@ try{
         if($success == 1){
             $data = $return['data'];
         }else{
-            throw new Exception($errorcode);
+            throw new Exception($return['data']);
         }
     }else if($method = 'use'){
         $return = useCardCount($mobile);
@@ -77,23 +80,23 @@ try{
         if($success == 1){
             $data = $return['data'];
         }else{
-            throw new Exception($errorcode);
+            throw new Exception($return['data']);
         }
     }
     else{
         $errorcode = 10010;
         throw new Exception("INVALID_METHOD");
     }
-    $result = array("data"=>$data,"success"=>1,"errcode"=>0);
+    $result = array("data"=>$data,"success"=>1,"errorcode"=>0);
     if(isset($param['array']) and trim($param['array']) != '' ){
-        print_r($result);
+        dump($result);
         exit;
     }
     echo json_encode($result);
 }catch (Exception $e){
-    $result = array("data"=>$e->getMessage(),"success"=>0,"errcode"=>$errorcode);
+    $result = array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
     if(isset($param['array']) and trim($param['array']) != '' ){
-        print_r($result);
+        dump($result);
         exit;
     }
     echo json_encode($result);

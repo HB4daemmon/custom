@@ -4,7 +4,7 @@ INSERT INTO `eav_attribute`(`entity_type_id`, `attribute_code`, `attribute_model
 `frontend_label`, `frontend_class`, `source_model`, `is_required`, `is_user_defined`,
 `default_value`, `is_unique`, `note`)
 VALUES
-(1,'phone',NUll,NUll,'varchar',NULL,NULL,'text','Phone Number',NULL,NULL,0,0,NULL,0,NULL),
+(1,'mobile',NUll,NUll,'varchar',NULL,NULL,'text','Phone Number',NULL,NULL,0,0,NULL,0,NULL),
 (1,'birthday',NUll,NUll,'datetime',NULL,NULL,'date','Birthday',NULL,NULL,0,0,NULL,0,NULL),
 (1,'sex',NUll,NUll,'varchar',NULL,NULL,'select','Sex',NULL,NULL,0,0,NULL,0,NULL),
 (1,'myimage',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL),
