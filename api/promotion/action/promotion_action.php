@@ -135,12 +135,41 @@ function getPromotions($mobile,$sort){
     }
 }
 
+function getCouponId($promotion_id){
+    try{
+        $conn = db_connect();
+        $sql = "select coupon_id from custom_promotions
+                                 where promotion_id = $promotion_id";
+        $sqlres = $conn->query($sql);
+        if(!$sqlres){
+            $errorcode = 10033;
+            throw new Exception('GET_COUPLE_FROM_PROMOTION_ERROR');
+        }
+        $row = $sqlres->fetch_assoc();
+        $coupon_id = $row['coupon_id'];
+
+        $conn->close();
+        return array("data"=>$coupon_id,"success"=>1,"errorcode"=>0);
+    }catch (Exception $e){
+        $conn->close();
+        return array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+    }
+}
+
 function updatePromotion($promotion_id,$code){
     try{
         $conn = db_connect();
-        if ($code == 'use'){
+        if ($code == 'disable'){
             $sql = "update custom_promotions set enable_flag = 0
                                            where promotion_id = $promotion_id";
+        }else if($code == 'use'){
+            $coupon_id_array = getCouponId($promotion_id);
+            if($coupon_id_array['success'] == 0){
+                throw new Exception($coupon_id_array['data']);
+            }
+            $coupon_id = $coupon_id_array['data'];
+            $sqls="update salesrule_coupon set times_used = times_used + 1 where couple_id = $coupon_id;
+                ";
         }else{
             $errorcode = 10023;
             throw new Exception('INVALID_UPDATE_CODE');

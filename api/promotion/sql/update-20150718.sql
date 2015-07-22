@@ -14,4 +14,9 @@ CREATE TABLE IF NOT EXISTS `custom_promotions` (
 select * from custom_promotions cp,
 		      salesrule_coupon sc
 where cp.coupon_id = sc.coupon_id
-  and phone = '15151834774'
+  and phone = '15151834774';
+
+update salesrule_coupon set times_used = times_used + 1 where coupon_id = 17;
+update salesrule set times_used = times_used + 1 where rule_id = (select rule_id from salesrule_coupon where couple_id = 17);
+insert into salesrule_coupon_usage values (17,1,1);
+insert into salesrule_customer(rule_id,customer_id,times_used) values(2,1,1);

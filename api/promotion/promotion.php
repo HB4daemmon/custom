@@ -70,15 +70,15 @@ try{
         if($success != 1){
             throw new Exception($return['data']);
         }
-    }else if($method == 'use'){
+    }else if($method == 'use' or $method = 'disable'){
         if(isset($param['additional']) and trim($param['additional'] != '')){
             $promotion_id = $param['additional'];
         }else{
             $errorcode = 10029;
-            throw new Exception("NO_PROMOTION_ID_WHEN_USE_PROMORION");
+            throw new Exception("NO_PROMOTION_ID_WHEN_USE_OR_DISABLE_PROMORION");
         }
 
-        $return = updatePromotion($promotion_id,'use');
+        $return = updatePromotion($promotion_id,$method);
         $errorcode = $return['errorcode'];
         $success = $return['success'];
         $promotions = $return['data'];

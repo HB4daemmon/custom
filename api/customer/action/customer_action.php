@@ -98,4 +98,51 @@
         }
     }
 
+    function createCustomers($mobile,$origin_user_id){
+        try{
+            $conn = db_connect();
+            $date = date('Y-m-d H:i:s');
+            $sql = "INSERT INTO `customer_entity` ( `entity_type_id`, `attribute_set_id`, `website_id`, `email`, `group_id`, `increment_id`, `store_id`, `created_at`, `updated_at`, `is_active`, `disable_auto_group_change`)
+                          VALUES (1, 0, 1,$mobile. '@meiguoyouxian.com', 1, NULL, 1, $date, $date, 1, 0)";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10034;
+                throw new Exception('CREATE_CUSTOMER_ERROR');
+            }
+            $sql = "";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10035;
+                throw new Exception('CREATE_CUSTOMER_ERROR');
+            }
+            $conn->commit();
+            $conn->close();
+            return array('data'=>'',"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            $conn->rollback();
+            $conn->close();
+            return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
+
+    function insertCustomerColumn($entity_id,$column_name,$value){
+        try{
+            $conn = db_connect();
+            $value = addslashes($value);
+            $sql = "INSERT INTO `customer_entity_varchar` ( `entity_type_id`, `attribute_id`, `entity_id`, `value`)
+                          VALUES(1,(select attribute_id from eav_attribute where attribute_code = '$column_name'),$entity_id,'$value')";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10036;
+                throw new Exception('INSERT_'.strtoupper($column_name).'_ERROR');
+            }
+            $conn->commit();
+            $conn->close();
+            return array('data'=>'INSERT_'.strtoupper($column_name).'_SUCCESS',"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            $conn->rollback();
+            $conn->close();
+            return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
 ?>
