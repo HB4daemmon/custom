@@ -6,9 +6,9 @@ CREATE TABLE IF NOT EXISTS `custom_promotions` (
   `catalog` varchar(20) COMMENT 'Catalog',
   `enable_flag` smallint(1) unsigned NOT NULL COMMENT 'Enable flag, 1,enabled 0,disabled',
   `creation_date` timestamp NOT NULL DEFAULT current_timestamp COMMENT 'Create date',
-  `last_update_date` timestamp NOT NULL DEFAULT current_timestamp COMMENT 'Last update date',
+  `last_update_date` timestamp NOT NULL COMMENT 'Last update date',
   PRIMARY KEY(`promotion_id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --select sql
 select * from custom_promotions cp,

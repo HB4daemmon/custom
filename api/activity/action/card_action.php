@@ -64,6 +64,7 @@ function updateCardCount($mobile,$card_count){
                     $status = 1;
                 }else{
                     $card_count = $row['card_count'] + $card_count;
+                    $status = $row['status'];
                 }
 
                 $sql = "update custom_activity_cards

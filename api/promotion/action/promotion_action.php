@@ -40,6 +40,7 @@ function createPromotion($mobile,$rule_id){
 
         $validation = validateUniquePromotion($mobile,$rule_id);
         if($validation['success'] == 0){
+            $errorcode = $validation['errorcode'];
             throw new Exception($validation['data']);
         }
 
@@ -70,9 +71,11 @@ function validateUniquePromotion($mobile,$rule_id){
     try{
         $conn = db_connect();
 
-        $sql = "select * from custom_promotions
-                        where mobile = $mobile
-                          and rule_id = $rule_id)";
+        $sql = "select cp.promotion_id from custom_promotions cp,
+                                              salesrule_coupon sc
+                                        where cp.mobile = '$mobile'
+                                          and cp.coupon_id = sc.coupon_id
+                                          and sc.rule_id = $rule_id";
         $sqlres = $conn->query($sql);
         if(!$sqlres){
             $errorcode = 10031;
