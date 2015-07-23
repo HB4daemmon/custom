@@ -21,7 +21,7 @@
             return array("data"=>$entity_id,"success"=>1,"errorcode"=>0);
         }catch (Exception $e){
             $conn->close();
-            return array("data"=>$e->getMessage().$sql,"success"=>0,"errorcode"=>$errorcode);
+            return array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
         }
     }
 
@@ -184,6 +184,77 @@
         }catch (Exception $e){
             $conn->close();
             return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
+
+    function createCustomerAddress($address){
+        try{
+            $conn = db_connect();
+            $user_id = $address['user_id'];
+            $entity_id_return = getEntityIdFromUserId($user_id);
+            if($entity_id_return['success'] == 0){
+                $errorcode = $entity_id_return['errorcode'];
+                throw new Exception($entity_id_return['data']);
+            }else{
+                $entity_id = $entity_id_return['data'];
+            }
+            $date = date('Y-m-d H:i:s');
+            $sql = "INSERT INTO `customer_address_entity` (`entity_type_id`, `attribute_set_id`, `increment_id`, `parent_id`, `created_at`, `updated_at`, `is_active`)
+                    VALUES ( 2, 0, NULL, $entity_id, '$date', '$date', 1)";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10038;
+                throw new Exception('CREATE_CUSTOMER_ERROR');
+            }
+
+            $conn->commit();
+            $conn->close();
+            return array('',"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            $conn->rollback();
+            $conn->close();
+            return array(''.$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
+
+    function getEntityIdFromUserId($user_id){
+        try{
+            $conn = db_connect();
+            $sql = "select entity_id from customer_entity_varchar
+                    where attribute_code = 'origin_user_id'
+                      and value = '$user_id'";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10039;
+                throw new Exception('GET_ENTITY_ID_ERROR');
+            }
+            $row = $sqlres->fetch_assoc();
+            $entity_id = $row["entity_id"];
+            $conn->close();
+            return array('data'=>$entity_id,"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            $conn->close();
+            return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
+
+    function insertAddressColumn($entity_id,$column_name,$value,$type){
+        try{
+            $conn = db_connect();
+            $value = addslashes($value);
+            $sql = "INSERT INTO `customer_entity_varchar` ( `entity_type_id`, `attribute_id`, `entity_id`, `value`)
+                          VALUES(1,(select attribute_id from eav_attribute where attribute_code = '$column_name' and entity_type_id = 1),$entity_id,'$value')";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10040;
+                throw new Exception('');
+            }
+            $conn->close();
+            return array('',"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            $conn->rollback();
+            $conn->close();
+            return array('data'=>$e->getMessage().$sql,"success"=>0,"errorcode"=>$errorcode);
         }
     }
 ?>
