@@ -8,42 +8,56 @@
 require_once(dirname(__FILE__).'/action/customer_action.php');
 
 function getFromMobile($mobile){
-    $entity_id_array = getEntityId($mobile);
-    $customer = array();
-    if($entity_id_array['success'] == 0){
-        throw new Exception($entity_id_array['data']);
-    }else{
-        $entity_id = $entity_id_array['data'];
-        $column_array = array('sex','nickname','birthday','myimage');
-        foreach($column_array as $column){
-            $column_tmp = getCustomerColumn($entity_id,$column);
-            if($column_tmp['success'] == 0){
-                throw new Exception($column_tmp['data']);
-            }else{
-                $customer[$column]=$column_tmp[$column];
+    try{
+        $entity_id_array = getEntityId($mobile);
+        $customer = array();
+        if($entity_id_array['success'] == 0){
+            $errorcode = $entity_id_array['errorcode'];
+            throw new Exception($entity_id_array['data']);
+        }else{
+            $entity_id = $entity_id_array['data'];
+            $column_array = array('sex','nickname','birthday','myimage');
+            foreach($column_array as $column){
+                $column_tmp = getCustomerColumn($entity_id,$column);
+                if($column_tmp['success'] == 0){
+                    $errorcode = $column_tmp['errorcode'];
+                    throw new Exception($column_tmp['data']);
+                }else{
+                    $customer[$column]=$column_tmp[$column];
+                }
             }
+            return array("data"=>$customer,"success"=>1,'errorcode'=>0);
         }
-        return array("data"=>$customer,"success"=>1,'errorcode'=>0);
+    }catch (Exception $e){
+        return array("data"=>$e->getMessage(),"success"=>0,'errorcode'=>$errorcode);
     }
+
 }
 
 function updateFromMobile($mobile,$customer){
-    $entity_id_array = getEntityId($mobile);
-    if($entity_id_array['success'] == 0){
-        throw new Exception($entity_id_array['data']);
-    }else{
-        $entity_id = $entity_id_array['data'];
-        foreach($customer as $customer_name=>$column_value){
-            $enable_list = array('sex','nickname','myimage','birthday');
-            if(in_array($customer_name,$enable_list)){
-                $column_tmp = updateCustomerColumn($entity_id,$customer_name,$column_value);
-                if($column_tmp['success'] == 0){
-                    throw new Exception($column_tmp['data']);
+    try{
+        $entity_id_array = getEntityId($mobile);
+        if($entity_id_array['success'] == 0){
+            $errorcode = $entity_id_array['errorcode'];
+            throw new Exception($entity_id_array['data']);
+        }else{
+            $entity_id = $entity_id_array['data'];
+            foreach($customer as $customer_name=>$column_value){
+                $enable_list = array('sex','nickname','myimage','birthday');
+                if(in_array($customer_name,$enable_list)){
+                    $column_tmp = updateCustomerColumn($entity_id,$customer_name,$column_value);
+                    if($column_tmp['success'] == 0){
+                        $errorcode = $column_tmp['errorcode'];
+                        throw new Exception($column_tmp['data']);
+                    }
                 }
             }
+            return array("data"=>'Update customer success',"success"=>1,'errorcode'=>0);
         }
-        return array("data"=>'Update customer success',"success"=>1,'errorcode'=>0);
+    }catch (Exception $e){
+        return array("data"=>$e->getMessage(),"success"=>0,'errorcode'=>$errorcode);
     }
+
 }
 
 try{
@@ -56,13 +70,36 @@ try{
         $errorcode = 10015;
         throw new Exception('NONE_METHOD');
     }
+	$method = $param['method'];
+
+    if($method == 'create'){
+        $filepath = dirname(__FILE__).'/../../transfer/customer/';
+        if(!isset($param['filename']) or trim($param['filename'] == '')){
+            $filename = 'ecs_users.csv';
+        }else{
+            $filename = $param['filename'];
+        }
+        $file = $filepath.$filename;
+        $f = fopen($file,'r');
+        while($data = fgetcsv($f)){
+            $customer = array();
+            $customer['mobile_phone'] = $data[29];
+            $customer['reg_time'] = $data[13];
+            $customer['password'] = $data[3];
+            $customer['user_id'] = $data[0];
+            $customer['reg_city'] = $data[43];
+            $return = createCustomers($customer);
+            dump($return);
+        }
+        exit;
+    }
 
     if(!isset($param['mobile']) or trim($param['mobile'] == '')){
         $errorcode = 10016;
         throw new Exception('NONE_MOBILE_PHONE_NUMBER');
     }
 
-    $method = $param['method'];
+    
     $mobile = $param['mobile'];
     if($method == 'get'){
         $return = getFromMobile($mobile);

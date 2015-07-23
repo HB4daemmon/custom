@@ -53,4 +53,5 @@ INSERT INTO `eav_attribute`(`entity_type_id`, `attribute_code`, `attribute_model
                             `frontend_label`, `frontend_class`, `source_model`, `is_required`, `is_user_defined`,
                             `default_value`, `is_unique`, `note`)
 VALUES
-  (1,'origin_user_id',NUll,NUll,'varchar',NULL,NULL,'text','Phone Number',NULL,NULL,0,0,NULL,0,NULL);
+  (1,'origin_user_id',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL),
+  (1,'reg_city',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL);
