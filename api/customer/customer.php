@@ -18,7 +18,7 @@ function getFromMobile($mobile){
             $entity_id = $entity_id_array['data'];
             $column_array = array('sex','nickname','birthday','myimage');
             foreach($column_array as $column){
-                $column_tmp = getCustomerColumn($entity_id,$column);
+                $column_tmp = getCustomerColumn($entity_id,$column,1);
                 if($column_tmp['success'] == 0){
                     $errorcode = $column_tmp['errorcode'];
                     throw new Exception($column_tmp['data']);
@@ -73,7 +73,7 @@ try{
 	$method = $param['method'];
 
     if($method == 'create'){
-        $filepath = dirname(__FILE__).'/../../transfer/customer/';
+        $filepath = dirname(__FILE__).'/../../transfer/';
         if(!isset($param['filename']) or trim($param['filename'] == '')){
             $filename = 'ecs_users.csv';
         }else{
@@ -94,12 +94,17 @@ try{
         exit;
     }
 
+    if(!isset($param['additional']) or trim($param['additional'] == '')){
+        $additional = '';
+    }else{
+        $additional = $param['additional'];
+    }
+
     if(!isset($param['mobile']) or trim($param['mobile'] == '')){
         $errorcode = 10016;
         throw new Exception('NONE_MOBILE_PHONE_NUMBER');
     }
 
-    
     $mobile = $param['mobile'];
     if($method == 'get'){
         $return = getFromMobile($mobile);
@@ -149,6 +154,20 @@ try{
             }
         }
 
+    }else if($method == 'login'){
+        if ($additional == ''){
+            $errorcode = 10043;
+            throw new Exception('Please enter password.');
+        }else{
+            $password = $additional;
+        }
+
+        $login_return = login($mobile,$password);
+        if($login_return['success'] == 0){
+            $errorcode = $login_return['errorcode'];
+            throw new Exception($login_return['data']);
+        }
+        $data = $login_return['data'];
     }else{
         $errorcode = 10017;
         throw new Exception("INVALID_METHOD");

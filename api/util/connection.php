@@ -12,6 +12,7 @@ function db_connect() {
      if ($res->connect_errno) {
          throw new Exception("Failed to connect database");
      }
+     $res->query("SET NAMES utf8");
      return $res;
 }
 ?>

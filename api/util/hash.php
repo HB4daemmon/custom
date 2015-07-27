@@ -3,10 +3,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-$password    = '123456';
-$hash = 'c8b8b0589072d0c2b127ef7ea642f9af';
-echo getHash($password,'JLkJTJqFjsLEL8tlcM0lXf2hO0VhuiUQ').'<br>'; //hash 加密
-echo validateHash($password,$hash); //hash 加密验证
+
 function getRandomString($len, $chars=null)
 {
     if (is_null($chars)) {
