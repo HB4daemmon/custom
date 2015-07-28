@@ -26,7 +26,7 @@ try{
             $address['name'] = $data[2];
             $address['tel'] = $data[3];
             $address['remark'] = $data[8];
-            $address['dateline'] = $data[8];
+            $address['dateline'] = $data[9];
             $address['city'] = $data[4];
             $address['id'] = $data[0];
             $address['district'] = $data[5];
@@ -35,9 +35,13 @@ try{
             dump($return);
         }
         exit;
-    }else if($method == 'test'){
-        $return = getCustomerEntityIdFromUserId('59072');
-        print_r($return);
+    }else if($method == 'setaddress'){
+        $return = setDefaultAddress();
+        dump($return);
+        /*if($return['success'] == 0){
+            $errorcode = $return['errorcode'];
+            throw new Exception($return['data']);
+        }*/
     }
 }catch(Exception $e){
     $result = array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);

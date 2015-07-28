@@ -342,20 +342,33 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
     function setDefaultAddress(){
         try{
             $conn = db_connect();
-            $sql="select max(entity_id) as address_entity_id,parent_id,count(parent_id) as entity_count from customer_address_entity group by parent_id";
+            $sql="select parent_id,count(parent_id) as entity_count from customer_address_entity group by parent_id";
             $sqlres = $conn->query($sql);
             while($row = $sqlres->fetch_assoc()){
-                $count = $row['entity_count'];
-                $parent_id = $row['entity_count'];
-                if($count == 1){
-                    $address_entity_id = $row['address_entity_id'];
+                $parent_id = $row['parent_id'];
+
+                $sql1 = "select cae.entity_id,cev.value from customer_address_entity cae,
+                                                      customer_address_entity_varchar cev,
+                                                      eav_attribute ea
+                                              where cae.entity_id = cev.entity_id
+                                                and cae.parent_id = $parent_id
+                                                and cev.attribute_id = ea.attribute_id
+                                                and ea.attribute_code = 'dateline'
+                                                order by cev.value desc";
+                $sqlres1 = $conn->query($sql1);
+                if(!$sqlres1){
+                    $errorcode = 10047;
+                    throw new Exception("Set Default Address Error");
+                }
+                $count = $sqlres1->num_rows;
+                if($count > 0){
+                    $row1 = $sqlres1->fetch_assoc();
+                    $address_entity_id = $row1['entity_id'];
                     $return = createOrUpdateDefaultAddress($parent_id,$address_entity_id);
                     if($return['success'] == 0){
                         $errorcode = $return['errorcode'];
                         throw new Exception($return['data']);
                     }
-                }else{
-                    
                 }
             }
             $conn->close();
@@ -397,7 +410,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }catch (Exception $e){
             $conn->rollback();
             $conn->close();
-            return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+            return array('data'=>$e->getMessage().$sql,"success"=>0,"errorcode"=>$errorcode);
         }
     }
 ?>
