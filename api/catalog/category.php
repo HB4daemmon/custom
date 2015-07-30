@@ -1,12 +1,12 @@
 <?php
-require_once(dirname(__FILE__).'/action/customer_action.php');
+require_once(dirname(__FILE__).'/action/category_action.php');
 
 try{
     $param = $_REQUEST;
     $result = array();
 
     if(!isset($param['method']) or trim($param['method']) == ''){
-        $errorcode = 10044;
+        $errorcode = 10051;
         throw new Exception('NONE_METHOD');
     }
     $method = $param['method'];
@@ -35,16 +35,14 @@ try{
             dump($return);
         }
         exit;
-    }else if($method == 'set_default_address'){
-        $return = setDefaultAddress();
+    }else if($method == 'test'){
+        $return = insertCategoryColumns(1,'column_name','value','datetime');
         dump($return);
-        /*if($return['success'] == 0){
-            $errorcode = $return['errorcode'];
-            throw new Exception($return['data']);
-        }*/
+
     }
 }catch(Exception $e){
     $result = array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
     echo json_encode($result);
 }
+
 ?>

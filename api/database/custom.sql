@@ -68,4 +68,14 @@ VALUES
   (2,'remark',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL),
   (2,'dateline',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL);
 
+-- 20150730
+INSERT INTO `eav_attribute`(`entity_type_id`, `attribute_code`, `attribute_model`,
+                            `backend_model`, `backend_type`, `backend_table`, `frontend_model`, `frontend_input`,
+                            `frontend_label`, `frontend_class`, `source_model`, `is_required`, `is_user_defined`,
+                            `default_value`, `is_unique`, `note`)
+VALUES
+  (3,'origin_cat_id',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL),
+  (3,'origin_path',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL),
+  (3,'origin_parent_id',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL);
+
 

@@ -15,4 +15,5 @@ function db_connect() {
      $res->query("SET NAMES utf8");
      return $res;
 }
+
 ?>

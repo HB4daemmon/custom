@@ -53,5 +53,5 @@ function pay($order){
 }
 
 $order = getPrepayId();
-print_r(pay($order));
+   echo(pay($order));
 ?>
