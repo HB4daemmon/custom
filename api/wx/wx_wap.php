@@ -25,13 +25,13 @@ function MakeSign($str)
 
 function getPrepayId(){
     $input = new WxPayUnifiedOrder();
-    $input->SetBody("test1");
-    $input->SetAttach("test1");
+    $input->SetBody("美果优鲜订单");
+    $input->SetAttach("缤纷水果");
     $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
     $input->SetTotal_fee("1");
     $input->SetTime_start(date("YmdHis"));
     $input->SetTime_expire(date("YmdHis", time() + 600));
-    $input->SetGoods_tag("test");
+    $input->SetGoods_tag("商品标签");
     $input->SetNotify_url("https://dev1.meiguoyouxian.com/magento/custom/api/util/wx.php");
     $input->SetTrade_type("APP");
     $order = WxPayApi::unifiedOrder($input);
@@ -48,10 +48,30 @@ function pay($order){
     $sign_str['package'] = 'Sign=WXPay';
     $sign_str['noncestr'] = $api::getNonceStr();
     $sign_str['timestamp'] = date("YmdHis");
+    $sign_str['success'] = $order['return_code'] == 'SUCCESS'?1:0;
+    $sign_str['return_msg'] = $order['return_msg'];
     $sign_str['sign']  = MakeSign($sign_str);
     return $sign_str;
 }
 
-$order = getPrepayId();
-   echo(pay($order));
+try{
+    $param = $_REQUEST;
+    $order = getPrepayId();
+    $pay_str = pay($order);
+    if($pay_str['success'] == 0){
+        $errorcode = 10052;
+        throw new Exception($pay_str['return_msg']);
+    }
+    $result = array("data"=>$pay_str,"success"=>1,"errorcode"=>0);
+
+    if(isset($param['array']) and trim($param['array']) != '' ){
+        dump($result);
+        exit;
+    }
+    echo json_encode($result);
+}catch (Exception $e){
+    $result = array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+    echo json_encode($result);
+}
+
 ?>

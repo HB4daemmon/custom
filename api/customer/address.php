@@ -4,6 +4,7 @@ require_once(dirname(__FILE__).'/action/customer_action.php');
 try{
     $param = $_REQUEST;
     $result = array();
+    $address = array();
 
     if(!isset($param['method']) or trim($param['method']) == ''){
         $errorcode = 10044;
@@ -42,7 +43,16 @@ try{
             $errorcode = $return['errorcode'];
             throw new Exception($return['data']);
         }*/
+    }else{
+        $errorcode = 10057;
+        throw new Exception("INVALID_METHOD");
     }
+    $result = array("data"=>$data,"success"=>1,"errorcode"=>0);
+    if(isset($param['array']) and trim($param['array']) != '' ){
+        dump($result);
+        exit;
+    }
+    echo json_encode($result);
 }catch(Exception $e){
     $result = array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
     echo json_encode($result);
