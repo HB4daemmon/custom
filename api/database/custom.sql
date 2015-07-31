@@ -78,4 +78,32 @@ VALUES
   (3,'origin_path',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL),
   (3,'origin_parent_id',NUll,NUll,'varchar',NULL,NULL,'hidden',NULL,NULL,NULL,0,0,NULL,0,NULL);
 
-
+-- 20150731 for mgyx_database
+CREATE TABLE IF NOT EXISTS `custom_wx_recall` (
+  `recall_id` int(10) NOT NULL AUTO_INCREMENT,
+  `return_code` varchar(20) NOT NULL,
+  `return_msg` varchar(150) NOT NULL,
+  `mch_id` varchar(50),
+  `device_info` varchar(50),
+  `nonce_str` varchar(50),
+  `sign` varchar(50),
+  `result_code` varchar(50),
+  `err_code` varchar(50),
+  `err_code_des` varchar(150),
+  `openid` varchar(150),
+  `is_subscribe` varchar(5),
+  `trade_type` varchar(50),
+  `bank_type` varchar(50),
+  `total_fee` varchar(50),
+  `fee_type` varchar(50),
+  `cash_fee` varchar(50),
+  `cash_fee_type` varchar(50),
+  `coupon_fee` varchar(50),
+  `coupon_count` varchar(50),
+  `transaction_id` varchar(50),
+  `out_trade_no` varchar(50),
+  `attach` varchar(150),
+  `time_end` varchar(50),
+  `creation_date` timestamp NOT NULL DEFAULT current_timestamp,
+  PRIMARY KEY(`recall_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;

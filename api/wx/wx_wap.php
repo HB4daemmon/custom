@@ -23,12 +23,13 @@ function MakeSign($str)
     return $result;
 }
 
-function getPrepayId(){
+function getPrepayId($total_amount,$order_number,$attach){
     $input = new WxPayUnifiedOrder();
     $input->SetBody("美果优鲜订单");
     $input->SetAttach("缤纷水果");
-    $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
-    $input->SetTotal_fee("1");
+    $input->SetOut_trade_no($order_number);
+    $input->SetTotal_fee($total_amount);
+	$input->SetAttach($attach);
     $input->SetTime_start(date("YmdHis"));
     $input->SetTime_expire(date("YmdHis", time() + 600));
     $input->SetGoods_tag("商品标签");
@@ -54,7 +55,7 @@ function pay($order){
     return $sign_str;
 }
 
-try{
+/*try{
     $param = $_REQUEST;
     $order = getPrepayId();
     $pay_str = pay($order);
@@ -72,6 +73,6 @@ try{
 }catch (Exception $e){
     $result = array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
     echo json_encode($result);
-}
+}*/
 
 ?>
