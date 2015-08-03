@@ -61,7 +61,7 @@ try{
                 $sql1 = "INSERT INTO custom_wx_recall(return_code,return_msg,attach,bank_type,cash_fee,fee_type,is_subscribe,mch_id,nonce_str,openid,out_trade_no,result_code,sign,time_end,total_fee,trade_type,transaction_id)
                         values ('$return_code','$return_msg','$attach','$bank_type','$cash_fee','$fee_type','$is_subscribe','$mch_id','$nonce_str','$openid','$out_trade_no','$result_code','$sign','$time_end','$total_fee','$trade_type','$transaction_id')";
                 $conn->query($sql1);
-                order_paid($out_trade_no, 2);
+                order_paid($attach, 2);
                 logger($sql1);
             }
         }else{
