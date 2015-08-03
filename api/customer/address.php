@@ -33,12 +33,12 @@ try{
             $address['district'] = $data[5];
             $address['area'] = $data[6];
             $return = createCustomerAddress($address);
-            dump($return);
+            dump_msg($return);
         }
         exit;
     }else if($method == 'set_default_address'){
         $return = setDefaultAddress();
-        dump($return);
+        dump_msg($return);
         /*if($return['success'] == 0){
             $errorcode = $return['errorcode'];
             throw new Exception($return['data']);
@@ -49,7 +49,7 @@ try{
     }
     $result = array("data"=>$data,"success"=>1,"errorcode"=>0);
     if(isset($param['array']) and trim($param['array']) != '' ){
-        dump($result);
+        dump_msg($result);
         exit;
     }
     echo json_encode($result);

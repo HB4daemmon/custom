@@ -89,14 +89,14 @@ try{
     }
     $result = array("data"=>$data,"success"=>1,"errorcode"=>0);
     if(isset($param['array']) and trim($param['array']) != '' ){
-        dump($result);
+        dump_msg($result);
         exit;
     }
     echo json_encode($result);
 }catch (Exception $e){
     $result = array("data"=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
     if(isset($param['array']) and trim($param['array']) != '' ){
-        dump($result);
+        dump_msg($result);
         exit;
     }
     echo json_encode($result);

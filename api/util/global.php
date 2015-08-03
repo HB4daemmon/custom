@@ -3,7 +3,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: X-Requested-With');
 header('Content-Type:text/html; charset=utf-8');
 
-function dump($vars, $label = '', $return = false) {
+function dump_msg($vars, $label = '', $return = false) {
     if (ini_get('html_errors')) {
         $content = "<pre>\n";
         if ($label != '') {

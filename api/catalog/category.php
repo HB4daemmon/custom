@@ -48,7 +48,7 @@ try{
     }
     $result = array("data"=>$data,"success"=>1,"errorcode"=>0);
     if(isset($param['array']) and trim($param['array']) != '' ){
-        dump($result);
+        dump_msg($result);
         exit;
     }
     echo json_encode($result);

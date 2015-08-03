@@ -89,7 +89,7 @@ try{
             $customer['user_id'] = $data[0];
             $customer['reg_city'] = $data[43];
             $return = createCustomers($customer);
-            dump($return);
+            dump_msg($return);
         }
         exit;
     }
@@ -174,7 +174,7 @@ try{
     }
     $result = array("data"=>$data,"success"=>1,"errorcode"=>0);
     if(isset($param['array']) and trim($param['array']) != '' ){
-        dump($result);
+        dump_msg($result);
         exit;
     }
     echo json_encode($result);

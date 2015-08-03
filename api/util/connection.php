@@ -16,8 +16,8 @@ function db_connect() {
      return $res;
 }
 
-function orange_connnect(){
-	$res = new mysqli('10.252.148.78', 'meiguo', 'meiguo2015', 'mgyx');
+function orange_connect(){
+	$res = new mysqli('121.43.234.124', 'meiguo', 'meiguo2015', 'mgyx');
      if ($res->connect_errno) {
          throw new Exception("Failed to connect database");
      }

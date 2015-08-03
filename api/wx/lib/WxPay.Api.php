@@ -51,7 +51,6 @@ class WxPayApi
 		$inputObj->SetAppid(WxPayConfig::APPID);//公众账号ID
 		$inputObj->SetMch_id(WxPayConfig::MCHID);//商户号
 		$inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
-        //$inputObj->SetSpbill_create_ip("120.26.211.153");
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
 		
 		//签名
@@ -521,7 +520,7 @@ class WxPayApi
 	 * @param int $second   url执行超时时间，默认30s
 	 * @throws WxPayException
 	 */
-	private static function postXmlCurl($xml, $url, $useCert = false, $second = 30)
+	public static function postXmlCurl($xml, $url, $useCert = false, $second = 30)
 	{		
 		$ch = curl_init();
 		//设置超时
