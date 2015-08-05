@@ -209,4 +209,83 @@ require_once(dirname(__FILE__).'/../../util/connection.php');
             return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
         }
     }
+
+    function createProductCSV($product,$first_flag,$output_file){
+        try{
+            $product_list = array('website','store','type','sku','name','image','small_image','thumbnail','image_label','small_image_label',
+                                'thumbnail_label','media_gallery','weight','price','description','category_ids','short_description','status','tax_class_id',
+                                'visibility','manage_stock','qty','use_config_manage_stock','origin_product_id','sort_order','unit');
+            if($first_flag == 'Y'){
+                $output = array();
+                foreach($product_list as $p){
+                    array_push($output,$p);
+                }
+            }else{
+                $output = array();
+                array_push($output,'base');
+                array_push($output,'default');
+                array_push($output,'simple');
+                array_push($output,$product['goods_sn']);
+                array_push($output,$product['goods_name']);
+                array_push($output,$product['original_img']);
+                array_push($output,$product['goods_img']);
+                array_push($output,$product['goods_thumb']);
+                array_push($output,$product['goods_name']);
+                array_push($output,$product['goods_name']);
+                array_push($output,$product['goods_name']);
+                array_push($output,'');
+                array_push($output,'1');
+                array_push($output,$product['price']);
+                array_push($output,htmlspecialchars($product['goods_desc']));
+                $categories = getCategories($product['cat_id'])['data'];
+                array_push($output,$categories); //category
+                array_push($output,$product['goods_brief']);
+                $status = ($product['is_on_sale'] == '1')?'Enabled':'Disabled';
+                array_push($output,$status);
+                array_push($output,'None');
+                array_push($output,'Catalog, Search');
+                array_push($output,'1');
+                array_push($output,'99999999');
+                array_push($output,'0');
+                array_push($output,$product['product_id']);
+                array_push($output,$product['sort_order']);
+                array_push($output,$product['unit']);
+            }
+
+
+            if(!$output_file){
+                $errorcode = 10060;
+                throw new Exception("FILE_OPEN_ERROR");
+            }
+            foreach($output as $o){
+                fwrite($output_file,"\"".$o."\",");
+            }
+            fwrite($output_file,"\r\n");
+
+            return array('data'=>'ITEM ['.$product['goods_sn'].':'.$product['goods_name'].'] created success',"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            return array('data'=>'ITEM ['.$product['goods_sn'].':'.$product['goods_name'].'] created failed, reason: '.$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
+
+    function getCategories($origin_cat_id){
+        try{
+            $conn = db_connect();
+            $current_entity_id = getCurrentCategoryId($origin_cat_id)['data'];
+            $sql = "select path from catalog_category_entity where entity_id = $current_entity_id";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10059;
+                throw new Exception("GET_CATEGORIES_ERROR");
+            }
+            $row = $sqlres->fetch_assoc();
+            $path = str_replace('/',',',$row['path']);
+            $conn->close();
+            return array('data'=>$path,"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            $conn->close();
+            return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
+
 ?>

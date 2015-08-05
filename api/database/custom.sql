@@ -107,3 +107,53 @@ CREATE TABLE IF NOT EXISTS `custom_wx_recall` (
   `creation_date` timestamp NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY(`recall_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 20150804
+-- origin_product_id
+INSERT INTO `eav_attribute` ( `entity_type_id`, `attribute_code`, `attribute_model`, `backend_model`, `backend_type`, `backend_table`,
+                                                                                                                          `frontend_model`, `frontend_input`, `frontend_label`, `frontend_class`, `source_model`, `is_required`, `is_user_defined`,
+                                                                                                                          `default_value`, `is_unique`, `note`) VALUES
+  (4, 'origin_product_id', NULL, NULL, 'varchar', NULL, NULL, 'text', 'origin_product_id', NULL, NULL, 0, 1, NULL, 0, NULL);
+
+INSERT INTO `catalog_eav_attribute` (`attribute_id`, `frontend_input_renderer`, `is_global`, `is_visible`, `is_searchable`, `is_filterable`, `is_comparable`,
+                                     `is_visible_on_front`, `is_html_allowed_on_front`, `is_used_for_price_rules`, `is_filterable_in_search`, `used_in_product_listing`,
+                                     `used_for_sort_by`, `is_configurable`, `apply_to`, `is_visible_in_advanced_search`, `position`, `is_wysiwyg_enabled`,
+                                     `is_used_for_promo_rules`)
+VALUES
+  ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), NULL, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0);
+
+INSERT INTO `eav_attribute_label` ( `attribute_id`, `store_id`, `value`) VALUES
+  ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), 1, 'origin_product_id');
+
+-- sort_order
+INSERT INTO `eav_attribute` ( `entity_type_id`, `attribute_code`, `attribute_model`, `backend_model`, `backend_type`, `backend_table`,
+                              `frontend_model`, `frontend_input`, `frontend_label`, `frontend_class`, `source_model`, `is_required`, `is_user_defined`,
+                              `default_value`, `is_unique`, `note`) VALUES
+  (4, 'sort_order', NULL, NULL, 'varchar', NULL, NULL, 'text', 'sort_order', NULL, NULL, 0, 1, NULL, 0, NULL);
+
+INSERT INTO `catalog_eav_attribute` (`attribute_id`, `frontend_input_renderer`, `is_global`, `is_visible`, `is_searchable`, `is_filterable`, `is_comparable`,
+                                     `is_visible_on_front`, `is_html_allowed_on_front`, `is_used_for_price_rules`, `is_filterable_in_search`, `used_in_product_listing`,
+                                     `used_for_sort_by`, `is_configurable`, `apply_to`, `is_visible_in_advanced_search`, `position`, `is_wysiwyg_enabled`,
+                                     `is_used_for_promo_rules`)
+VALUES
+  ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), NULL, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0);
+
+INSERT INTO `eav_attribute_label` ( `attribute_id`, `store_id`, `value`) VALUES
+  ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), 1, 'sort_order');
+
+-- unit
+INSERT INTO `eav_attribute` ( `entity_type_id`, `attribute_code`, `attribute_model`, `backend_model`, `backend_type`, `backend_table`,
+                              `frontend_model`, `frontend_input`, `frontend_label`, `frontend_class`, `source_model`, `is_required`, `is_user_defined`,
+                              `default_value`, `is_unique`, `note`) VALUES
+  (4, 'unit', NULL, NULL, 'varchar', NULL, NULL, 'text', 'unit', NULL, NULL, 0, 1, NULL, 0, NULL);
+
+INSERT INTO `catalog_eav_attribute` (`attribute_id`, `frontend_input_renderer`, `is_global`, `is_visible`, `is_searchable`, `is_filterable`, `is_comparable`,
+                                     `is_visible_on_front`, `is_html_allowed_on_front`, `is_used_for_price_rules`, `is_filterable_in_search`, `used_in_product_listing`,
+                                     `used_for_sort_by`, `is_configurable`, `apply_to`, `is_visible_in_advanced_search`, `position`, `is_wysiwyg_enabled`,
+                                     `is_used_for_promo_rules`)
+VALUES
+  ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), NULL, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0);
+
+INSERT INTO `eav_attribute_label` ( `attribute_id`, `store_id`, `value`) VALUES
+  ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), 1, 'unit');
+
