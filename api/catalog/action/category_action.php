@@ -227,16 +227,16 @@ require_once(dirname(__FILE__).'/../../util/connection.php');
                 array_push($output,'simple');
                 array_push($output,$product['goods_sn']);
                 array_push($output,$product['goods_name']);
-                array_push($output,$product['original_img']);
-                array_push($output,$product['goods_img']);
-                array_push($output,$product['goods_thumb']);
+                array_push($output,str_replace('images/','/images/',$product['original_img']));
+                array_push($output,str_replace('images/','/images/',$product['goods_img']));
+                array_push($output,str_replace('images/','/images/',$product['goods_thumb']));
                 array_push($output,$product['goods_name']);
                 array_push($output,$product['goods_name']);
                 array_push($output,$product['goods_name']);
-                array_push($output,'');
+                array_push($output,str_replace('images/','/images/',$product['goods_img']));
                 array_push($output,'1');
                 array_push($output,$product['price']);
-                array_push($output,htmlspecialchars($product['goods_desc']));
+                array_push($output,str_replace('/shop/images','/magento/media/shop/images',str_replace('"','""',$product['goods_desc'])));
                 $categories = getCategories($product['cat_id'])['data'];
                 array_push($output,$categories); //category
                 array_push($output,$product['goods_brief']);
@@ -257,6 +257,7 @@ require_once(dirname(__FILE__).'/../../util/connection.php');
                 $errorcode = 10060;
                 throw new Exception("FILE_OPEN_ERROR");
             }
+
             foreach($output as $o){
                 fwrite($output_file,"\"".$o."\",");
             }

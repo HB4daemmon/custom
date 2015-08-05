@@ -28,7 +28,7 @@ function getPrepayId($total_amount,$order_number,$attach){
     $input->SetBody("美果优鲜订单");
     $input->SetAttach("缤纷水果");
     $input->SetOut_trade_no($attach);
-    $input->SetTotal_fee($total_amount);
+    $input->SetTotal_fee($total_amount*100);
 	$input->SetAttach($order_number);
     $input->SetTime_start(date("YmdHis"));
     $input->SetTime_expire(date("YmdHis", time() + 600));
