@@ -157,3 +157,4 @@ VALUES
 INSERT INTO `eav_attribute_label` ( `attribute_id`, `store_id`, `value`) VALUES
   ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), 1, 'unit');
 
+-- 20150807                添加Daemon_Order模块

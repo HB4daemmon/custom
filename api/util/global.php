@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: X-Requested-With');
 header('Content-Type:text/html; charset=utf-8');
+date_default_timezone_set("Asia/Shanghai");
 
 function dump_msg($vars, $label = '', $return = false) {
     if (ini_get('html_errors')) {

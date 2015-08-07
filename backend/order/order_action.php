@@ -31,7 +31,7 @@ if (file_exists($file))
                     $sql = "update ecs_pay_log set is_paid = 0 where log_id = '$order_id'";
                     $sqlres = $conn->query($sql);
                     $log_time = strtotime("now");
-                    $sql1="Update ecs_order_info SET order_status = '3',confirm_time = '$log_time',pay_status = '0',pay_time = '$log_time',money_paid = 0 ,pay_note='refund'
+                    $sql1="Update ecs_order_info SET order_status = '3',confirm_time = '$log_time',pay_status = '0',pay_time = '$log_time',money_paid = 0 ,pay_note='refund',order_amount=goods_amount+shipping_fee
                                   where order_id = '$order_id'";
                     $sqlres1 = $conn->query($sql1);
 
