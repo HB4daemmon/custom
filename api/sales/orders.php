@@ -15,23 +15,26 @@ try{
     if($method == 'create_category'){
         $filepath = dirname(__FILE__).'/../../transfer/';
         if(!isset($param['filename']) or trim($param['filename'] == '')){
-            $filename = 'ecs_category.csv';
+            $filename = 'ecs_orders.csv';
         }else{
             $filename = $param['filename'];
         }
         $file = $filepath.$filename;
         $f = fopen($file,'r');
+        $last_order_id = '';
         while($data = fgetcsv($f)){
-            $category['is_show'] = $data[12];
-            $category['cat_desc'] = $data[3];
-            $category['cat_name'] = $data[1];
-            $category['cat_id'] = $data[0];
-            $category['path_column'] = $data[19];
-            $category['parent_id'] = $data[4];
+            $order_id = $data[0];
+            if($order_id == $last_order_id and $last_order_id != ''){
+                array_push($product,array_slice($data,-16));
+            }else if($order_id != $last_order_id){
+                custom_order::import_orders($order,$product);
+                $product = array();
+                $order = array_slice($data,0,76);
+                array_push($product,array_slice($data,-16));
+            }
             $return = createCategory($category);
-            dump_msg($return);
-        }
-        setCategoryPath();
+         }
+        custom_order::import_orders($order,$product);
         exit;
     }else if($method == 'test'){
         $order = new custom_order();

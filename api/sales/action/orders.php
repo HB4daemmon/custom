@@ -1,11 +1,12 @@
 <?php
 require_once dirname(__FILE__)."/../../../../app/Mage.php";
-require_once(dirname(__FILE__).'/../../util/connection.php');
+require_once dirname(__FILE__).'/../../util/connection.php' ;
+require_once dirname(__FILE__).'/../../customer/action/customer_action.php' ;
 
 class custom_order{
-    public function createOrder($customer_id,$product){
+    public static function createOrder($order,$product){
         Mage::init();
-        $customer = Mage::getModel('customer/customer')->load($customer_id);
+        $customer = Mage::getModel('customer/customer')->load($order['customer_id']);
         $transaction = Mage::getModel('core/resource_transaction');
         $store_Id = $customer->getStoreId();
         //$order = Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId();
@@ -20,13 +21,13 @@ class custom_order{
             ->setBase_currency_code('CNY')
             ->setStore_currency_code('CNY')
             ->setOrder_currency_code('CNY')
-            ->setOrigin_order_id('1')
-            ->setRefer('2')
-            ->setTo_buyer('3')
-            ->setIs_1yuan('4')
-            ->setDevice_id('5')
-            ->setShipping_type('6')
-            ->setCreated_at(date('y-m-d H:i:s'));
+            ->setOrigin_order_id($order['origin_order_id'])
+            ->setReferer($order['referer'])
+            ->setTo_buyer($order['to_buyer'])
+            ->setIs_1yuan($order['is_1yuan'])
+            ->setDevice_id($order['device_id'])
+            ->setShipping_type($order['shipping_type'])
+            ->setCreated_at($order['create_at']);
         $order->setCustomer_email($customer->getEmail())
             ->setCustomerFirstname($customer->getFirstname())
             ->setCustomerLastname($customer->getLastname())
@@ -129,6 +130,71 @@ class custom_order{
         $transaction->addCommitCallback(array($order,'save'));
         $transaction->save();
     }
+
+    public static function import_orders($order,$product){
+        try{
+            $conn = db_connect();
+            $order_id = $order[0];
+
+            $customer_id_return = customer::getCustomerEntityIdFromUserId($order[3]);
+            if($customer_id_return['success'] == 0){
+                $errorcode = $customer_id_return['errorcode'];
+                throw new Exception($customer_id_return['data']);
+            }
+            $customer_id = $customer_id_return['data'];
+            $order_sn = $order[2];
+            $order_status_code = $order[4];
+            $pay_status_code = $order[6];
+            $referer = $order[44];
+            $to_buyer = $order[55];
+            $is_1yuan = $order[69];
+            $device_id = $order[70];
+            $shipping_type = $order[73];
+            $create_at = date('y-m-d H:i:s',$order[45]);
+            $order_list = array("origin_order_id"=>$order_id,"customer_id"=>$customer_id,"order_sn"=>$order_sn,"referer"=>$referer,"to_buyer"=>$to_buyer,
+                "is_1yuan"=>$is_1yuan,"device_id"=>$device_id,"shipping_type"=>$shipping_type,"create_at"=>$create_at);
+            $last_order_id = $order_id;
+
+            $product_list = array();
+            foreach($product as $p){
+                $goods_id = self::getProductId($p[2]);
+                $qty = array('qty',$p[6]);
+                $product_list[$goods_id]=$qty;
+            }
+
+            self::createOrder($order_list,$product_list);
+
+            $conn->close();
+            return array('data'=>'',"success"=>1,"errorcode"=>0);
+        }catch (Exception $e){
+            $conn->close();
+            return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
+        }
+    }
+
+    public static function getProductId($origin_product_id){
+        try{
+            $conn = db_connect();
+            $sql = "select value_id from catalog_product_entity_varchar p,eav_attribute e
+                                where p.attribute_id = e.attribute_id
+                                and e.attribute_code = 'origin_product_id'
+                                and e.entity_type_id = 4
+                                and p.value = '$origin_product_id'";
+            $sqlres = $conn->query($sql);
+            if(!$sqlres){
+                $errorcode = 10063;
+                throw new Exception("GET_PRODUCT_ID_ERROR");
+            }
+            $row = $sqlres->fetch_assoc();
+            $product_id = $row['value_id'];
+            $conn->close();
+            return $product_id;
+        }catch (Exception $e){
+            return $errorcode.":".$e->getMessage();
+            $conn->close();
+        }
+    }
+
 }
 
 

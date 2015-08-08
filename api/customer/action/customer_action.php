@@ -1,8 +1,8 @@
 <?php
 require_once(dirname(__FILE__).'/../../util/connection.php');
 require_once(dirname(__FILE__).'/../../util/hash.php');
-
-    function getEntityId($mobile){
+class customer{
+    public static function getEntityId($mobile){
         try{
             $conn = db_connect();
             $sql = "select entity_id from customer_entity
@@ -26,7 +26,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function getCustomerColumn($entity_id,$column_name,$entity_type_id){
+    public static function getCustomerColumn($entity_id,$column_name,$entity_type_id){
         try{
             $conn = db_connect();
             $sql = "select cev.value from customer_entity_varchar cev,
@@ -50,7 +50,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function updateCustomerColumn($entity_id,$column_name,$column_value){
+    public static function updateCustomerColumn($entity_id,$column_name,$column_value){
         /*try{
             $conn = db_connect();
             $sql = "update customer_entity_varchar cev
@@ -98,7 +98,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function createCustomers($customer){
+    public static function createCustomers($customer){
         try{
             $conn = db_connect();
             $mobile = $customer['mobile_phone'];
@@ -107,7 +107,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
             $origin_userid = $customer['user_id'];
             $reg_city = $customer['reg_city'];
             $default_image = '/image/apple.jpg';
-            $store_list = getDefaultStoreName();
+            $store_list = self::getDefaultStoreName();
 
             if($store_list['success'] == 0){
                 $store_name = 'Default Store View';
@@ -123,18 +123,18 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
                 throw new Exception('CREATE_CUSTOMER_ERROR');
             }
 
-            if (getEntityId($mobile)['success'] == 1){
-                $entity_id = getEntityId($mobile)['data'];
+            if (self::getEntityId($mobile)['success'] == 1){
+                $entity_id = self::getEntityId($mobile)['data'];
             }else{
-                $errorcode = getEntityId($mobile)['errorcode'];
-                throw new Exception(getEntityId($mobile)['data']);
+                $errorcode = self::getEntityId($mobile)['errorcode'];
+                throw new Exception(self::getEntityId($mobile)['data']);
             }
 
             $attribute_list = array('firstname' => $mobile, 'lastname' => '','password_hash' => $password_hash, 'created_in' => $store_name,'origin_user_id'=>$origin_userid,
                                     'mobile' => $mobile, 'birthday' => '1990-01-01 00:00:00','sex' => '1','myimage'=>$default_image,'nickname' => $mobile,'reg_city' => $reg_city);
 
             foreach($attribute_list as $key => $value){
-                $return = insertCustomerColumn($entity_id,$key,$value);
+                $return = self::insertCustomerColumn($entity_id,$key,$value);
                 if($return['success'] == 0){
                     $errorcode = $return['errorcode'];
                     throw new Exception($return['data']);
@@ -150,7 +150,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function insertCustomerColumn($entity_id,$column_name,$value){
+    public static function insertCustomerColumn($entity_id,$column_name,$value){
         try{
             $conn = db_connect();
             $value = addslashes($value);
@@ -170,7 +170,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function getDefaultStoreName(){
+    public static function getDefaultStoreName(){
         try{
             $conn = db_connect();
             $sql = "select name from core_store where code = 'default'";
@@ -189,11 +189,11 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function createCustomerAddress($address){
+    public static function createCustomerAddress($address){
         try{
             $conn = db_connect();
             $user_id = $address['user_id'];
-            $entity_id_return = getCustomerEntityIdFromUserId($user_id);
+            $entity_id_return = self::getCustomerEntityIdFromUserId($user_id);
             $street = $address['city'].$address['district'].$address['area'].$address['address']."\n".$address['remark'];
             $firstname = $address['name'];
             $telephone = $address['tel'];
@@ -223,8 +223,8 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
             $row = $sqlres->fetch_array();
             $address_entity_id = $row[0];
 
-            insertAddressColumn($address_entity_id,'region_id',0,'int');
-            insertAddressColumn($address_entity_id,'street',$street,'text');
+            self::insertAddressColumn($address_entity_id,'region_id',0,'int');
+            self::insertAddressColumn($address_entity_id,'street',$street,'text');
             if($city == '南京市'){
                 $region = '江苏省';
                 $postcode = '210000';
@@ -238,7 +238,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
             $address_list = array('firstname'=>$firstname,'lastname'=>'','city'=>$city,'region'=>$region,'postcode'=>$postcode,'country_id'=>'CN',
                 'telephone'=>$telephone,'fax'=>'','origin_address_id'=>$origin_address_id,'district'=>$district,'area'=>$area,'remark'=>$remark,'dateline'=>$dateline);
             foreach($address_list as $key=>$value){
-                $insert_return = insertAddressColumn($address_entity_id,"$key",$value,'varchar');
+                $insert_return = self::insertAddressColumn($address_entity_id,"$key",$value,'varchar');
                 if($insert_return['success'] == 0){
                     $errorcode = $insert_return['errorcode'];
                     throw new Exception($insert_return['data']);
@@ -254,7 +254,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function getCustomerEntityIdFromUserId($user_id){
+    public static function getCustomerEntityIdFromUserId($user_id){
         try{
             $conn = db_connect();
             $sql = "select cev.entity_id from customer_entity_varchar cev,
@@ -277,7 +277,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function insertAddressColumn($address_entity_id,$column_name,$value,$type){
+    public static function insertAddressColumn($address_entity_id,$column_name,$value,$type){
         try{
             $conn = db_connect();
             $value = addslashes($value);
@@ -309,15 +309,15 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function login($mobile,$password){
+    public static function login($mobile,$password){
         try{
-            $entity_id_array = getEntityId($mobile);
+            $entity_id_array = self::getEntityId($mobile);
             if($entity_id_array['success'] == 0){
                 $errorcode = $entity_id_array['errorcode'];
                 throw new Exception($entity_id_array['data']);
             }
             $entity_id = $entity_id_array['data'];
-            $password_true_array = getCustomerColumn($entity_id,'password_hash',1);
+            $password_true_array = self::getCustomerColumn($entity_id,'password_hash',1);
             if($password_true_array['success'] == 0){
                 $errorcode = $password_true_array['errorcode'];
                 throw new Exception($password_true_array['data']);
@@ -339,7 +339,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function setDefaultAddress(){
+    public static function setDefaultAddress(){
         try{
             $conn = db_connect();
             $sql="select parent_id,count(parent_id) as entity_count from customer_address_entity group by parent_id";
@@ -364,7 +364,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
                 if($count > 0){
                     $row1 = $sqlres1->fetch_assoc();
                     $address_entity_id = $row1['entity_id'];
-                    $return = createOrUpdateDefaultAddress($parent_id,$address_entity_id);
+                    $return = self::createOrUpdateDefaultAddress($parent_id,$address_entity_id);
                     if($return['success'] == 0){
                         $errorcode = $return['errorcode'];
                         throw new Exception($return['data']);
@@ -379,7 +379,7 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }
     }
 
-    function createOrUpdateDefaultAddress($entity_id,$address_entity_id){
+    public static function createOrUpdateDefaultAddress($entity_id,$address_entity_id){
         try{
             $conn = db_connect();
             $sql="select cei.* from customer_entity_int cei, eav_attribute ea
@@ -410,7 +410,8 @@ require_once(dirname(__FILE__).'/../../util/hash.php');
         }catch (Exception $e){
             $conn->rollback();
             $conn->close();
-            return array('data'=>$e->getMessage().$sql,"success"=>0,"errorcode"=>$errorcode);
+            return array('data'=>$e->getMessage(),"success"=>0,"errorcode"=>$errorcode);
         }
     }
+}
 ?>

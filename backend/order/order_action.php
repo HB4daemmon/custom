@@ -60,7 +60,7 @@ if (file_exists($file))
                             $sql = "update ecs_pay_log set is_paid = 1 where log_id = '$order_id'";
                             $sqlres = $conn->query($sql);
                             $log_time = strtotime("now");
-                            $sql1="Update ecs_order_info SET order_status = '1',confirm_time = '$log_time',pay_status = '2',pay_time = '$log_time',money_paid = order_amount,order_amount = 0
+                            $sql1="Update ecs_order_info SET order_status = '1',confirm_time = '$log_time',pay_status = '2',pay_time = '$log_time',money_paid = goods_amount+shipping_fee,order_amount = 0
                                   where order_id = '$order_id'";
                             $sqlres1 = $conn->query($sql1);
 

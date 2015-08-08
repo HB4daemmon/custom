@@ -9,7 +9,7 @@ require_once(dirname(__FILE__).'/action/customer_action.php');
 
 function getFromMobile($mobile){
     try{
-        $entity_id_array = getEntityId($mobile);
+        $entity_id_array = customer::getEntityId($mobile);
         $customer = array();
         if($entity_id_array['success'] == 0){
             $errorcode = $entity_id_array['errorcode'];
@@ -18,7 +18,7 @@ function getFromMobile($mobile){
             $entity_id = $entity_id_array['data'];
             $column_array = array('sex','nickname','birthday','myimage');
             foreach($column_array as $column){
-                $column_tmp = getCustomerColumn($entity_id,$column,1);
+                $column_tmp = customer::getCustomerColumn($entity_id,$column,1);
                 if($column_tmp['success'] == 0){
                     $errorcode = $column_tmp['errorcode'];
                     throw new Exception($column_tmp['data']);
@@ -36,7 +36,7 @@ function getFromMobile($mobile){
 
 function updateFromMobile($mobile,$customer){
     try{
-        $entity_id_array = getEntityId($mobile);
+        $entity_id_array = customer::getEntityId($mobile);
         if($entity_id_array['success'] == 0){
             $errorcode = $entity_id_array['errorcode'];
             throw new Exception($entity_id_array['data']);
@@ -45,7 +45,7 @@ function updateFromMobile($mobile,$customer){
             foreach($customer as $customer_name=>$column_value){
                 $enable_list = array('sex','nickname','myimage','birthday');
                 if(in_array($customer_name,$enable_list)){
-                    $column_tmp = updateCustomerColumn($entity_id,$customer_name,$column_value);
+                    $column_tmp = customer::updateCustomerColumn($entity_id,$customer_name,$column_value);
                     if($column_tmp['success'] == 0){
                         $errorcode = $column_tmp['errorcode'];
                         throw new Exception($column_tmp['data']);
@@ -88,7 +88,7 @@ try{
             $customer['password'] = $data[3];
             $customer['user_id'] = $data[0];
             $customer['reg_city'] = $data[43];
-            $return = createCustomers($customer);
+            $return = customer::createCustomers($customer);
             dump_msg($return);
         }
         exit;
@@ -162,7 +162,7 @@ try{
             $password = $additional;
         }
 
-        $login_return = login($mobile,$password);
+        $login_return = customer::login($mobile,$password);
         if($login_return['success'] == 0){
             $errorcode = $login_return['errorcode'];
             throw new Exception($login_return['data']);

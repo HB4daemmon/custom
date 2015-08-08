@@ -32,12 +32,12 @@ try{
             $address['id'] = $data[0];
             $address['district'] = $data[5];
             $address['area'] = $data[6];
-            $return = createCustomerAddress($address);
+            $return = customer::createCustomerAddress($address);
             dump_msg($return);
         }
         exit;
     }else if($method == 'set_default_address'){
-        $return = setDefaultAddress();
+        $return = customer::setDefaultAddress();
         dump_msg($return);
         /*if($return['success'] == 0){
             $errorcode = $return['errorcode'];
