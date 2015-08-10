@@ -158,3 +158,23 @@ INSERT INTO `eav_attribute_label` ( `attribute_id`, `store_id`, `value`) VALUES
   ((SELECT max(cast(attribute_id as unsigned)) from eav_attribute), 1, 'unit');
 
 -- 20150807                添加Daemon_Order模块
+
+-- 20150810 backend
+create table custom_backend_permission(id int auto_increment primary key,
+                                       code varchar(100),
+                                       description varchar(500))
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table custom_backend_users(id int auto_increment primary key,
+                                  user_name varchar(100),
+                                  password varchar(100),
+                                  permission int,CONSTRAINT `FK_ID` FOREIGN KEY (`permission`) REFERENCES `custom_backend_permission` (`id`))
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into custom_backend_permission(code,description) values('admin','全局管理员权限');
+insert into custom_backend_permission(code,description) values('nj_admin','南京管理员权限');
+insert into custom_backend_permission(code,description) values('sh_admin','上海管理员权限');
+
+insert into custom_backend_users(user_name,password,permission) values('admin',md5('youadmin'),1);
+insert into custom_backend_users(user_name,password,permission) values('nj_admin',md5('nanjingadmin'),2);
+insert into custom_backend_users(user_name,password,permission) values('sh_admin',md5('shanghaiyouadmin'),3);
+

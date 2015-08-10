@@ -151,9 +151,14 @@ class custom_order{
             $device_id = $order[70];
             $shipping_type = $order[73];
             $create_at = date('y-m-d H:i:s',$order[45]);
+
+            if($order_status_code){
+
+            }
+
             $order_list = array("origin_order_id"=>$order_id,"customer_id"=>$customer_id,"order_sn"=>$order_sn,"referer"=>$referer,"to_buyer"=>$to_buyer,
                 "is_1yuan"=>$is_1yuan,"device_id"=>$device_id,"shipping_type"=>$shipping_type,"create_at"=>$create_at);
-            $last_order_id = $order_id;
+
 
             $product_list = array();
             foreach($product as $p){
