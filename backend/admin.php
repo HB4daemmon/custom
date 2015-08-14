@@ -1,5 +1,5 @@
 <?php
-//require_once dirname(__FILE__)."/order/order_action.php";
+require_once dirname(__FILE__)."/order/order_action.php";
 ?>
 <!DOCTYPE html>
 <html>

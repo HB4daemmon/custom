@@ -163,8 +163,16 @@ INSERT INTO `eav_attribute_label` ( `attribute_id`, `store_id`, `value`) VALUES
 drop table custom_backend_users;
 drop table custom_backend_assign;
 drop table custom_backend_permission;
+drop table custom_app_permission;
 drop table custom_backend_role;
+
+
 create table custom_backend_permission(id int auto_increment primary key,
+                                       permission varchar(100) NOT NULL,
+                                       description varchar(500) NOT NULL,
+                                       enable_flag smallint(1) NOT NULL)
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table custom_app_permission(id int auto_increment primary key,
                                        permission varchar(100) NOT NULL,
                                        description varchar(500) NOT NULL,
                                        enable_flag smallint(1) NOT NULL)
@@ -172,7 +180,8 @@ create table custom_backend_permission(id int auto_increment primary key,
 create table custom_backend_role(id int auto_increment primary key,
                                        role varchar(100) NOT NULL,
                                        description varchar(500) NOT NULL,
-                                       enable_flag smallint(1) NOT NULL)
+                                       enable_flag smallint(1) NOT NULL,
+                                       category varchar(50) NOT NULL)
   ENGINE=InnoDB DEFAULT CHARSET=utf8;
 create table custom_backend_assign(role_id int NOT NULL,
                                      permission_id int NOT NULL,
@@ -207,18 +216,23 @@ insert into custom_backend_permission(permission,description,enable_flag) values
 insert into custom_backend_permission(permission,description,enable_flag) values('daily_refund','退货单',1);
 insert into custom_backend_permission(permission,description,enable_flag) values('daily_chart','趋势表',1);
 
+insert into custom_app_permission(permission,description,enable_flag) values('manager','经理',1);
+insert into custom_app_permission(permission,description,enable_flag) values('promoter','推广',1);
 
-insert into custom_backend_role(role,description,enable_flag) values ('admin','领导层',1);
-insert into custom_backend_role(role,description,enable_flag) values ('manager','经理',1);
-insert into custom_backend_role(role,description,enable_flag) values ('nj_header','南京分拣中心Head',1);
-insert into custom_backend_role(role,description,enable_flag) values ('nj_purchase','南京分拣中心采购',1);
-insert into custom_backend_role(role,description,enable_flag) values ('nj_pack','南京分拣中心包装员',1);
-insert into custom_backend_role(role,description,enable_flag) values ('sh_header','上海分拣中心Head',1);
-insert into custom_backend_role(role,description,enable_flag) values ('sh_purchase','上海分拣中心采购',1);
-insert into custom_backend_role(role,description,enable_flag) values ('sh_pack','上海分拣中心包装员',1);
-insert into custom_backend_role(role,description,enable_flag) values ('purchase_header','采购经理',1);
-insert into custom_backend_role(role,description,enable_flag) values ('nj_main_driver','南京干线司机',1);
-insert into custom_backend_role(role,description,enable_flag) values ('sh_main)driver','上海干线司机',1);
+insert into custom_backend_role(role,description,enable_flag,category) values ('admin','领导层',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('manager','经理',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('nj_header','南京分拣中心Head',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('nj_purchase','南京分拣中心采购',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('nj_pack','南京分拣中心包装员',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('sh_header','上海分拣中心Head',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('sh_purchase','上海分拣中心采购',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('sh_pack','上海分拣中心包装员',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('purchase_header','采购经理',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('nj_main_driver','南京干线司机',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('sh_main_driver','上海干线司机',1,'backend');
+insert into custom_backend_role(role,description,enable_flag,category) values ('app_manager','内部APP经理',1,'app');
+insert into custom_backend_role(role,description,enable_flag,category) values ('app_promoter','内部APP推广',1,'app');
+
 
 insert into custom_backend_assign(role_id,permission_id,enable_flag) values(1,1,1);
 insert into custom_backend_assign(role_id,permission_id,enable_flag) values(1,2,1);
@@ -345,6 +359,41 @@ insert into custom_backend_users(user_name,password,role,enable_flag) values('wa
 
 insert into custom_backend_users(user_name,password,role,enable_flag) values('lixiuxin',md5('888888'),11,1);
 
+-- create table 20150812
+drop table custom_backend_users;
+drop table custom_backend_assign;
+drop table custom_backend_permission;
+drop table custom_backend_role;
 
 
-
+create table custom_backend_permission(id int auto_increment primary key,
+                                       permission_code varchar(100) NOT NULL,
+                                       description varchar(500) NOT NULL,
+                                       upper_permission_code varchar(100) NOT NULL,
+                                       enable_flag smallint(1) NOT NULL)
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table custom_backend_role(id int auto_increment primary key,
+                                 role_code varchar(100) NOT NULL,
+                                 description varchar(500) NOT NULL,
+                                 enable_flag smallint(1) NOT NULL,
+                                 category varchar(50) NOT NULL)
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table custom_backend_assign(role_id int NOT NULL,
+                                   permission_id int NOT NULL,
+                                   note varchar(500),
+                                   enable_flag smallint(1) NOT NULL,
+  CONSTRAINT `FK_RESIGN_1` FOREIGN KEY (`role_id`) REFERENCES `custom_backend_role` (`id`),
+  CONSTRAINT `FK_RESIGN_2` FOREIGN KEY (`permission_id`) REFERENCES `custom_backend_permission` (`id`))
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table custom_backend_users(id int auto_increment primary key,
+                                  user_code varchar(20) NOT NULL,
+                                  user_name varchar(100) NOT NULL,
+                                  nick_name varchar(100),
+                                  password varchar(100) NOT NULL,
+                                  backend_role_id int,
+                                  app_role_id int,
+                                  enable_flag smallint(1) NOT NULL,
+  CONSTRAINT `FK_USER_1` FOREIGN KEY (`backend_role_id`) REFERENCES `custom_backend_role` (`id`),
+  CONSTRAINT `FK_USER_2` FOREIGN KEY (`app_role_id`) REFERENCES `custom_backend_role` (`id`))
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+Alter table custom_backend_users add unique(user_code);
