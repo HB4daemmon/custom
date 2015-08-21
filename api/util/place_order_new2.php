@@ -49,8 +49,6 @@ $district = trim($_REQUEST['district']);
 $area = trim($_REQUEST['area']);
 $shipping_type = trim($_REQUEST['shipping_type']);
 $scan = trim($_REQUEST['scan']);
-$postscript = $postscript.",".$payment;
-
 //$attach = trim($_REQUEST['attach']);
 
 if(!$goods_list || !$amount || !$consignee || !$tel || !$address || !$city || !$district || !$area || !$shipping_time || !$shipping_type)

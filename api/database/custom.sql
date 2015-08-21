@@ -397,3 +397,34 @@ create table custom_backend_users(id int auto_increment primary key,
   CONSTRAINT `FK_USER_2` FOREIGN KEY (`app_role_id`) REFERENCES `custom_backend_role` (`id`))
   ENGINE=InnoDB DEFAULT CHARSET=utf8;
 Alter table custom_backend_users add unique(user_code);
+
+
+-- 20150820
+create table custom_backend_type_lookups(id int auto_increment primary key,
+                                         type_code varchar(100),
+                                         description varchar(500),
+                                         category varchar(100),
+                                         enable_flag smallint(1) NOT NULL)
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table custom_backend_action_log(id int auto_increment primary key,
+                                   user_id int NOT NULL,
+                                   order_id int NOT NULL,
+                                   type_id int NOT NULL,
+                                   origin_value varchar(500),
+                                   value varchar(500),
+                                   note varchar(500),
+                                   actions_date timestamp NOT NULL DEFAULT current_timestamp,
+  CONSTRAINT `FK_ACTION_1` FOREIGN KEY (`user_id`) REFERENCES `custom_backend_users` (`id`),
+  CONSTRAINT `FK_ACTION_2` FOREIGN KEY (`type_id`) REFERENCES `custom_backend_type_lookups` (`id`))
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into custom_backend_type_lookups(type_code,description,category,enable_flag) values('delay','延迟配送时间','question',1);
+
+create table custom_backend_sorting_assign(sorting_id int not null,
+  user_id int NOT NULL,
+  note varchar(500),
+  enable_flag smallint(1) NOT NULL,
+  CONSTRAINT `FK_SORTING_ASSGIN_1` FOREIGN KEY (`sorting_id`) REFERENCES `ecs_data_sorting` (`sorting_id`),
+  CONSTRAINT `FK_SORTING_ASSGIN_2` FOREIGN KEY (`user_id`) REFERENCES `custom_backend_users` (`id`))
+  ENGINE=InnoDB DEFAULT CHARSET=utf8;

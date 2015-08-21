@@ -48,10 +48,10 @@ function pay($order){
     $sign_str['prepayid'] = $order['prepay_id'];
     $sign_str['package'] = 'Sign=WXPay';
     $sign_str['noncestr'] = $api::getNonceStr();
-    $sign_str['timestamp'] = date("YmdHis");
+    $sign_str['timestamp'] = time();
+    $sign_str['sign']  = MakeSign($sign_str);
     $sign_str['success'] = $order['return_code'] == 'SUCCESS'?1:0;
     $sign_str['return_msg'] = $order['return_msg'];
-    $sign_str['sign']  = MakeSign($sign_str);
     return $sign_str;
 }
 

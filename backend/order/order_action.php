@@ -61,7 +61,7 @@ if (file_exists($file))
                             $sqlres = $conn->query($sql);
                             $log_time = strtotime("-8 hours");
                             $sql1="Update ecs_order_info SET order_status = '1',confirm_time = '$log_time',pay_status = '2',pay_time = '$log_time',money_paid = goods_amount+shipping_fee,order_amount = 0
-                                  where order_id = '$order_id'";
+                                  where order_id = '$order_id' and order_status != '1' and pay_status != '2'";
                             $sqlres1 = $conn->query($sql1);
 
                             $sql2 = "INSERT INTO ecs_order_action (order_id, action_user, order_status, shipping_status, pay_status, action_place, action_note, log_time)

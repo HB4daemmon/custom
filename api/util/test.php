@@ -1,13 +1,13 @@
 <?php
-require_once("connection.php");
-
-$array = array("1"=>1,"a"=>2,"3"=>3,"4"=>4,"5"=>5);
-
-foreach($array as $v=>$g){
-    if(in_array(2,$array)){
-        echo $g;
+function getMonthMsg($date){
+    $date_array = explode('-',$date);
+    $first_day = mktime(0,0,0,$date_array[1],1,$date_array[0]);
+    $last_day = strtotime('+1 month',$first_day);
+    for($i=$first_day;$i<$last_day;$i=$i+24*60*60){
+        echo date('Y-m-d',$i)."<br>";
     }
 }
 
-//print_r($list);
+getMonthMsg('2015-07-31');
+
 ?>
